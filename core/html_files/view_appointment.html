@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Appointment | Hope Hub</title>
+    <style>
+        :root {
+            --lvl1-grey: #f1f2f6;      /* Request Accepted */
+            --lvl2-blue: #00a8ff;      /* Website Approved */
+            --lvl3-green: #90ee90;     /* Hospital Accepted */
+            --lvl-red: #ff7675;        /* Rejected */
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        
+        h1 { text-align: center; color: #2d3436; margin-bottom: 40px; }
+
+        .appointment-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .appointment-block {
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Dynamic Background Colors */
+        .level-1 { background-color: var(--lvl1-grey); color: #2d3436; }
+        .level-2 { background-color: var(--lvl2-blue); color: white; }
+        .level-3 { background-color: var(--lvl3-green); color: #1b5e20; }
+        .level-rejected { background-color: var(--lvl-red); color: white; }
+
+        .info-row { display: flex; justify-content: space-between; align-items: center; }
+        .details h3 { margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .details p { margin: 5px 0; font-size: 0.95rem; }
+        
+        .stage-indicator {
+            font-weight: bold;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .receipt-btn {
+            margin-top: 15px;
+            display: inline-block;
+            padding: 8px 16px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Appointment Status Tracker</h1>
+    <div id="appointment-container" class="appointment-list">
+        </div>
+</div>
+
+<script>
+    async function loadAppointments() {
+        try {
+            // Fetching from the same table used to request appointments
+            const response = await fetch('/api/my-appointments');
+            const appointments = await response.json();
+            const container = document.getElementById('appointment-container');
+
+            if (appointments.length === 0) {
+                container.innerHTML = "<p style='text-align:center;'>No appointments found.</p>";
+                return;
+            }
+
+            container.innerHTML = appointments.map(appt => {
+                let statusClass = "";
+                let statusText = "";
+
+                // Color Logic based on your specific requirements
+                switch(appt.status_level) {
+                    case 1:
+                        statusClass = "level-1";
+                        statusText = "Level 1: Request Accepted";
+                        break;
+                    case 2:
+                        statusClass = "level-2";
+                        statusText = "Level 2: Website Approved";
+                        break;
+                    case 3:
+                        statusClass = "level-3";
+                        statusText = "Level 3: Confirmed by Hospital";
+                        break;
+                    case "Rejected":
+                        statusClass = "level-rejected";
+                        statusText = "REJECTED by Hospital";
+                        break;
+                    default:
+                        statusClass = "level-1";
+                        statusText = "Processing...";
+                }
+
+                return `
+                    <div class="appointment-block ${statusClass}">
+                        <div class="info-row">
+                            <div class="details">
+                                <span class="stage-indicator">${statusText}</span>
+                                <h3 style="margin-top:15px;">Patient: ${appt.patient_name}</h3>
+                                <p><strong>Hospital:</strong> ${appt.hospital_name}</p>
+                                <p><strong>Specialization:</strong> ${appt.emergency_type || 'General'}</p>
+                            </div>
+                            <div style="text-align:right">
+                                <small>Appt ID: #${appt.id}</small><br>
+                                ${appt.status_level === 3 ? '<a href="#" class="receipt-btn">Download Receipt</a>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (error) {
+            document.getElementById('appointment-container').innerHTML = 
+                "<p style='color:red; text-align:center;'>Error loading status. Please try again.</p>";
+        }
+    }
+
+    window.onload = loadAppointments;
+</script>
+</body>
+</html>

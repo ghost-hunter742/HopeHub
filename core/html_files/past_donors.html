@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wall of Honor | Hope Hub</title>
+    <style>
+        /* --- Integrating Your Provided Theme --- */
+        :root {
+            --primary-color: #6ed8fe;
+            --secondary-color: #ffffff;
+            --accent-color: #53f644;
+            --hover-blue: #00000066;
+            --sidebar-bg: #00000067;
+            --font-family: 'Arial', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            /* Hide Scrollbars as requested */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        body::-webkit-scrollbar { display: none; }
+
+        /* --- Search & Header Style --- */
+        .page-header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            display: flex;
+            justify-content: center;
+        }
+        #donorSearch {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--secondary-color);
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            outline: none;
+            color: #333;
+        }
+
+        /* --- Donor Cards Grid --- */
+        .donor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .donor-card {
+            background: var(--sidebar-bg); /* Matches your sidebar styling */
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, background 0.3s ease;
+            text-align: center;
+        }
+
+        .donor-card:hover {
+            transform: scale(1.03);
+            background: var(--hover-blue);
+        }
+
+        .donor-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--accent-color); /* Uses your accent green */
+        }
+
+        .donor-info {
+            padding: 20px;
+        }
+
+        .donor-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+
+        .donor-location {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .tribute {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            font-style: italic;
+            color: #f0f0f0;
+        }
+
+        /* Utility */
+        .hidden { display: none; }
+
+        @media (max-width: 600px) {
+            .page-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <h1>Wall of Honor</h1>
+        <p>Celebrating those who gave the ultimate gift of life.</p>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="donorSearch" placeholder="Search by name or city..." onkeyup="filterDonors()">
+    </div>
+
+    <div class="donor-grid" id="donorGrid">
+        <div class="donor-card">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400" class="donor-img" alt="Hero Portrait">
+            <div class="donor-info">
+                <span class="donor-name">Anita Verma</span>
+                <span class="donor-location">Mumbai, India</span>
+                <p class="tribute">"A life dedicated to healing continued even after her passing through organ donation."</p>
+            </div>
+        </div>
+
+        <div class="donor-card">
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400" class="donor-img" alt="Hero Portrait">
+            <div class="donor-info">
+                <span class="donor-name">Rohan Das</span>
+                <span class="donor-location">Kolkata, India</span>
+                <p class="tribute">"Rohan's legacy lives on through the gift of sight he provided to two individuals."</p>
+            </div>
+        </div>
+
+        <div class="donor-card">
+            <img src="https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400" class="donor-img" alt="Hero Portrait">
+            <div class="donor-info">
+                <span class="donor-name">Sarah Khan</span>
+                <span class="donor-location">Faizabad, UP</span>
+                <p class="tribute">"Her noble choice brought light and hope to families across the country."</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterDonors() {
+            const input = document.getElementById('donorSearch');
+            const filter = input.value.toLowerCase();
+            const grid = document.getElementById('donorGrid');
+            const cards = grid.getElementsByClassName('donor-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                const name = cards[i].querySelector('.donor-name').innerText.toLowerCase();
+                const location = cards[i].querySelector('.donor-location').innerText.toLowerCase();
+                
+                if (name.includes(filter) || location.includes(filter)) {
+                    cards[i].classList.remove('hidden');
+                } else {
+                    cards[i].classList.add('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

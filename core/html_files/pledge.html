@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pledge Life | Hope Hub & NOTTO</title>
+    
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        :root { --notto-blue: #003366; --notto-saffron: #ff9933; --dark: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f8f9fa; color: var(--dark); }
+        
+        .header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .hero { background: var(--notto-blue); color: white; padding: 50px 20px; text-align: center; }
+        
+        .main-container { max-width: 600px; margin: -40px auto 50px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--notto-saffron); }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 0.9rem; color: #555; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        
+        .g-recaptcha { display: flex; justify-content: center; margin: 25px 0; }
+        
+        .btn-pledge { width: 100%; background: var(--notto-saffron); color: white; border: none; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .btn-pledge:hover { background: #e68a00; transform: translateY(-2px); }
+
+        .official-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; }
+        .btn-outline { display: inline-block; margin-top: 10px; padding: 10px 20px; border: 2px solid var(--notto-blue); color: var(--notto-blue); text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.9rem; }
+        .btn-outline:hover { background: var(--notto-blue); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2 style="margin:0; color: var(--notto-blue);">HOPE HUB</h2>
+    <span style="font-weight:bold; color: #666;">In Support of NOTTO</span>
+</div>
+
+<div class="hero">
+    <h1>Take the Noble Pledge</h1>
+    <p>Your decision can gift a second chance at life to 8 people.</p>
+</div>
+
+<div class="main-container">
+    <form id="pledgeForm">
+        <div class="form-group">
+            <label>Full Name (as per Aadhaar)</label>
+            <input type="text" id="userName" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="userPhone" placeholder="+91 xxxxx xxxxx" required>
+        </div>
+
+        <div class="form-group">
+            <label>Select Organs to Pledge</label>
+            <select id="organType">
+                <option value="All Organs">All Organs & Tissues</option>
+                <option value="Kidneys">Kidneys Only</option>
+                <option value="Eyes">Eyes (Corneas) Only</option>
+                <option value="Heart">Heart Only</option>
+            </select>
+        </div>
+
+        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+
+        <button type="submit" class="btn-pledge">SUBMIT PLEDGE & GET CERTIFICATE</button>
+    </form>
+
+    <div class="official-links">
+        <p style="font-size: 0.85rem; color: #777;">To receive a legally valid <b>National Donor Card</b>, you must complete the Aadhaar-based registration on the official government portal.</p>
+        <a href="https://notto.abdm.gov.in/register" target="_blank" class="btn-outline">Official NOTTO Registration</a>
+        <br>
+        <a href="https://notto.abdm.gov.in/verify-certificate" target="_blank" style="display:inline-block; margin-top:15px; font-size: 0.8rem; color: #003366;">Already Pledged? Download Official Card here</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('pledgeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 1. Check CAPTCHA
+        const captchaResponse = grecaptcha.getResponse();
+        if (captchaResponse.length === 0) {
+            alert("Please verify that you are not a robot.");
+            return;
+        }
+
+        // 2. Capture Details
+        const name = document.getElementById('userName').value;
+        const organ = document.getElementById('organType').value;
+
+        // 3. Generate Appreciation Certificate
+        generatePDF(name, organ);
+
+        alert("Thank you! Your appreciation certificate is downloading. Please visit the official NOTTO link below to complete your legal registration.");
+    });
+
+    async function generatePDF(name, organ) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4');
+
+        // Background & Border
+        doc.setFillColor(245, 247, 250);
+        doc.rect(0, 0, 297, 210, 'F');
+        doc.setLineWidth(4);
+        doc.setDrawColor(0, 51, 102); // NOTTO Blue
+        doc.rect(5, 5, 287, 200);
+
+        // Header
+        doc.setFontSize(30);
+        doc.setTextColor(0, 51, 102);
+        doc.text("CERTIFICATE OF APPRECIATION", 148, 50, { align: "center" });
+
+        doc.setFontSize(16);
+        doc.setTextColor(60, 60, 60);
+        doc.text("This certificate is proudly presented to", 148, 75, { align: "center" });
+
+        // Name
+        doc.setFontSize(28);
+        doc.setTextColor(255, 153, 51); // Saffron
+        doc.text(name.toUpperCase(), 148, 95, { align: "center" });
+
+        // Body Text
+        doc.setFontSize(14);
+        doc.setTextColor(60, 60, 60);
+        doc.text(`For taking a noble pledge to donate ${organ}.`, 148, 115, { align: "center" });
+        doc.text("Your selfless decision brings hope to those awaiting a second chance at life.", 148, 125, { align: "center" });
+
+        // Signature Area
+        doc.setDrawColor(200, 200, 200);
+        doc.line(110, 160, 187, 160);
+        doc.setFontSize(12);
+        doc.text("Hope Hub Community", 148, 170, { align: "center" });
+
+        // Disclaimer
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        const date = new Date().toLocaleDateString();
+        doc.text(`Issued on: ${date} | This is a token of appreciation from Hope Hub.`, 148, 190, { align: "center" });
+        doc.text("Legal donor cards must be obtained from notto.abdm.gov.in", 148, 196, { align: "center" });
+
+        doc.save(`Pledge_Certificate_${name.replace(/\s+/g, '_')}.pdf`);
+    }
+</script>
+<script src="../base/javascipt_files/pledge.js"></script>
+</body>
+</html>

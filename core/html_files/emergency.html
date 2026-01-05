@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Emergency Support | HopeHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon (optional) -->
+  <link rel="icon" href="../../assets/favicon.ico" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      padding: 30px;
+    }
+
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #d32f2f;
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #b71c1c;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    #results {
+      margin-top: 20px;
+    }
+
+    .hospital {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* 🔶 YELLOW FALLBACK */
+    #fallback {
+      display: none;
+      margin-top: 20px;
+      background: #fff3cd;
+      color: #664d03;
+      border: 1px solid #ffecb5;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    #fallback a {
+      display: inline-block;
+      margin-top: 8px;
+      color: #0a58ca;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h2>🚑 Emergency Hospital Finder</h2>
+
+    <input id="location" type="text" placeholder="Enter city (e.g. Faizabad)" />
+    <button onclick="searchHospitals()">SEARCH NOW</button>
+
+    <div id="status"></div>
+    <div id="results"></div>
+
+    <!-- FALLBACK -->
+    <div id="fallback"></div>
+  </div>
+
+<script>
+async function searchHospitals() {
+  const city = document.getElementById("location").value.trim();
+  const status = document.getElementById("status");
+  const results = document.getElementById("results");
+  const fallback = document.getElementById("fallback");
+
+  status.innerText = "Searching...";
+  results.innerHTML = "";
+  fallback.style.display = "none";
+
+  try {
+    // 🔴 TRY FETCHING DATA (replace with real API later)
+    const response = await fetch("/api/hospitals?city=" + city);
+
+    if (!response.ok) throw new Error("API error");
+
+    const data = await response.json();
+
+    if (!data || data.length === 0) throw new Error("No hospitals found");
+
+    status.innerText = "Hospitals found:";
+    data.forEach(h => {
+      results.innerHTML += `
+        <div class="hospital">
+          <strong>${h.name}</strong><br>
+          ${h.address}
+        </div>
+      `;
+    });
+
+  } catch (error) {
+    console.warn("Fallback activated:", error.message);
+
+    status.innerText = "";
+    showFallback(city);
+  }
+}
+
+function showFallback(city) {
+  const fallback = document.getElementById("fallback");
+
+  fallback.innerHTML = `
+    ⚠️ Local hospital data unavailable.<br>
+    Showing all nearby hospitals via Google Maps.
+    <br>
+    <a href="https://www.google.com/maps/search/emergency+hospitals+${city}"
+       target="_blank">
+       View Hospitals on Google Maps
+    </a>
+  `;
+
+  fallback.style.display = "block";
+}
+</script>
+
+</body>
+</html>

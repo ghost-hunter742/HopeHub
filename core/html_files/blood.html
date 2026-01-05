@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope Hub | Live Inventory</title>
+    <style>
+        :root {
+            --primary-blue: #6ed8fe;
+            --dark-blue: #2c3e50;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: #f9fcff; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        h1 { text-align: center; color: var(--dark-blue); margin-bottom: 30px; }
+
+        /* Filter Section */
+        .filter-card {
+            background: white; padding: 25px; border-radius: 15px;
+            box-shadow: var(--shadow); margin-bottom: 25px;
+            display: flex; gap: 20px; flex-wrap: wrap;
+        }
+        .filter-group { display: flex; flex-direction: column; flex: 1; min-width: 200px; position: relative; }
+        label { font-size: 0.85rem; font-weight: bold; color: #64748b; margin-bottom: 8px; }
+        input, select { 
+            padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; 
+            font-size: 1rem; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary-blue); }
+
+        /* Autocomplete Box */
+        .suggestions {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: white; border: 1px solid #e2e8f0; border-radius: 10px;
+            z-index: 100; max-height: 200px; overflow-y: auto;
+            box-shadow: var(--shadow); margin-top: 5px; display: none;
+        }
+        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
+        .suggestion-item:hover { background: #f0faff; color: var(--primary-blue); font-weight: 600; }
+
+        /* Table Styling */
+        .table-card { background: white; border-radius: 15px; box-shadow: var(--shadow); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8fafc; padding: 15px; text-align: left; color: #64748b; border-bottom: 2px solid #edf2f7; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+        .blood-type { font-weight: bold; color: #ef4444; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hope Hub Inventory</h1>
+
+    <div class="filter-card">
+        <div class="filter-group">
+            <label>State</label>
+            <input type="text" id="stateInput" placeholder="Enter state..." autocomplete="off">
+            <div id="stateSuggestions" class="suggestions"></div>
+        </div>
+
+        <div class="filter-group">
+            <label>City</label>
+            <input type="text" id="cityInput" placeholder="Enter city..." autocomplete="off">
+            <div id="citySuggestions" class="suggestions"></div>
+        </div>
+
+        <div class="filter-group">
+            <label>Blood Type</label>
+            <select id="bloodSelect">
+                <option value="">All Types</option>
+                <option value="A+">A+</option><option value="B+">B+</option>
+                <option value="O+">O+</option><option value="AB+">AB+</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr><th>Hospital</th><th>Location</th><th>Type</th><th>Quantity</th></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let inventoryData = [];
+
+    // 1. Fetch data from your existing Node.js API
+    async function fetchData() {
+        try {
+            const response = await fetch('/api/blood-inventory');
+            inventoryData = await response.json();
+            updateTable();
+        } catch (err) { console.error("Data fetch failed", err); }
+    }
+
+    // 2. Setup Autocomplete Logic
+    function setupAutocomplete(inputId, suggestionId, dataKey) {
+        const input = document.getElementById(inputId);
+        const suggestionBox = document.getElementById(suggestionId);
+
+        input.addEventListener('input', () => {
+            const val = input.value.toLowerCase();
+            suggestionBox.innerHTML = '';
+            
+            if (!val) {
+                suggestionBox.style.display = 'none';
+                updateTable();
+                return;
+            }
+
+            // Get unique values from inventory matching the input
+            const matches = [...new Set(inventoryData
+                .map(item => item[dataKey])
+                .filter(name => name && name.toLowerCase().startsWith(val))
+            )];
+
+            if (matches.length > 0) {
+                matches.forEach(match => {
+                    const div = document.createElement('div');
+                    div.classList.add('suggestion-item');
+                    div.innerText = match;
+                    div.onclick = () => {
+                        input.value = match;
+                        suggestionBox.style.display = 'none';
+                        updateTable();
+                    };
+                    suggestionBox.appendChild(div);
+                });
+                suggestionBox.style.display = 'block';
+            } else {
+                suggestionBox.style.display = 'none';
+            }
+            updateTable();
+        });
+    }
+
+    // 3. Filter and Render Table
+    function updateTable() {
+        const stateVal = document.getElementById('stateInput').value.toLowerCase();
+        const cityVal = document.getElementById('cityInput').value.toLowerCase();
+        const bloodVal = document.getElementById('bloodSelect').value;
+
+        const filtered = inventoryData.filter(item => {
+            return (item.state_name?.toLowerCase().includes(stateVal)) &&
+                   (item.city?.toLowerCase().includes(cityVal)) &&
+                   (bloodVal === "" || item.blood_type === bloodVal);
+        });
+
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = filtered.length > 0 ? filtered.map(item => `
+            <tr>
+                <td><strong>${item.hospital_name}</strong></td>
+                <td>${item.city}, ${item.state_name}</td>
+                <td><span class="blood-type">${item.blood_type}</span></td>
+                <td>${item.quantity} Units</td>
+            </tr>
+        `).join('') : '<tr><td colspan="4" style="text-align:center;">No results found</td></tr>';
+    }
+
+    // Initialize
+    window.onload = () => {
+        fetchData();
+        setupAutocomplete('stateInput', 'stateSuggestions', 'state_name');
+        setupAutocomplete('cityInput', 'citySuggestions', 'city');
+        
+        document.getElementById('bloodSelect').onchange = updateTable;
+        
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.filter-group')) {
+                document.querySelectorAll('.suggestions').forEach(s => s.style.display = 'none');
+            }
+        });
+    };
+</script>
+</body>
+</html>

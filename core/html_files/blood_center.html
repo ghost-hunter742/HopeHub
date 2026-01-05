@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Requirements | Hope Hub</title>
+    <style>
+        :root {
+            --urgent-red: #ff4d4d;
+            --hope-blue: #6ed8fe;
+            --bg-light: #f4f7f6;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        h1 { text-align: center; color: #333; }
+
+        /* Urgent Section */
+        .urgent-banner {
+            background: white;
+            border-left: 8px solid var(--urgent-red);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .urgent-title { color: var(--urgent-red); font-weight: bold; font-size: 1.2rem; margin-bottom: 15px; }
+        
+        /* Grid Layout */
+        .centers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .center-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-top: 5px solid var(--hope-blue);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .blood-tag {
+            display: inline-block;
+            background: #ffebeb;
+            color: #d63031;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .location { color: #636e72; font-size: 0.9rem; margin-top: 10px; }
+        
+        @media (max-width: 600px) {
+            .centers-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hope Hub: Blood Requirements</h1>
+
+    <div id="urgent-list" class="urgent-banner">
+        <div class="urgent-title">⚠️ URGENT NEEDS (Immediate Donation Required)</div>
+        <div id="urgent-items">Loading urgent requirements...</div>
+    </div>
+
+    <div class="centers-grid" id="centers-container">
+        </div>
+</div>
+
+<script>
+    // Frontend JS to fetch data from our Node.js API
+    async function loadBloodData() {
+        const response = await fetch('/api/blood-requirements');
+        const data = await response.json();
+
+        const urgentItems = document.getElementById('urgent-items');
+        const centersContainer = document.getElementById('centers-container');
+
+        // Filter Urgent (e.g., urgency > 5 units or flagged critical)
+        const urgent = data.filter(item => item.urgency_level === 'Critical');
+        urgentItems.innerHTML = urgent.length > 0 
+            ? urgent.map(u => `<span class="blood-tag">${u.blood_type} (${u.units_needed} Units) @ ${u.city}</span>`).join('')
+            : "No critical shortages at this moment.";
+
+        // General Centers
+        centersContainer.innerHTML = data.map(item => `
+            <div class="center-card">
+                <h3>${item.center_name}</h3>
+                <p><strong>Required:</strong> ${item.blood_type}</p>
+                <p><strong>Amount:</strong> ${item.units_needed} Units</p>
+                <div class="location">📍 ${item.location_address}, ${item.city}</div>
+            </div>
+        `).join('');
+    }
+
+    loadBloodData();
+</script>
+<script src="../base/javascipt_files/blood_centers.js"></script>
+</body>
+</html>

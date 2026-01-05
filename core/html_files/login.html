@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HopeHub | Login & Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0a66c2,#2bb673);
+}
+
+.container{
+    width:1000px;
+    height:550px;
+    position:relative;
+    overflow:hidden;
+    border-radius:30px;
+}
+
+/* ===== COLORED BACKGROUND ===== */
+.background{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:60px;
+    color:white;
+}
+
+/* TEXT BLOCKS */
+.text-block{
+    width:40%;
+    transition:opacity .4s ease;
+}
+
+.text-block h1{
+    font-size:36px;
+    margin-bottom:10px;
+}
+.text-block p{
+    font-size:18px;
+    margin-bottom:20px;
+}
+.text-block button{
+    padding:12px 30px;
+    border-radius:25px;
+    border:2px solid white;
+    background:transparent;
+    color:white;
+    cursor:pointer;
+}
+
+/* DEFAULT VISIBILITY */
+.login-text{opacity:1;}
+.register-text{opacity:0;}
+
+/* WHEN REGISTER MODE */
+.container.register-mode .login-text{opacity:0;}
+.container.register-mode .register-text{opacity:1;}
+
+/* ===== WHITE PANEL ===== */
+.white-panel{
+    position:absolute;
+    top:0;
+    right:0;
+    width:50%;
+    height:100%;
+    background:white;
+    border-radius:30px;
+    padding:60px;
+    transition:transform .6s ease;
+    z-index:2;
+}
+
+/* SLIDE LEFT */
+.container.register-mode .white-panel{
+    transform:translateX(-100%);
+}
+
+/* ===== FORMS ===== */
+.form{display:none;}
+.form.active{display:block;}
+
+.form h2{
+    font-size:30px;
+    color:#0a66c2;
+    margin-bottom:25px;
+}
+
+.form input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.form button{
+    padding:12px 35px;
+    border-radius:25px;
+    border:none;
+    background:#0a66c2;
+    color:white;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="container">
+
+    <!-- COLORED SIDE -->
+    <div class="background">
+
+        <!-- LEFT TEXT (LOGIN MODE) -->
+        <div class="text-block login-text">
+            <h1>New here?</h1>
+            <p>Don’t have an account?</p>
+            <button onclick="switchToRegister()">Register here</button>
+        </div>
+
+        <!-- RIGHT TEXT (REGISTER MODE) -->
+        <div class="text-block register-text">
+            <h1>Welcome back!</h1>
+            <p>Already have an account?</p>
+            <button onclick="switchToLogin()">Login here</button>
+        </div>
+
+    </div>
+
+    <!-- WHITE PANEL -->
+    <div class="white-panel">
+
+        <!-- LOGIN -->
+        <div class="form active" id="loginForm">
+            <h2>Login</h2>
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button>Login</button>
+        </div>
+
+        <!-- REGISTER -->
+        <div class="form" id="registerForm">
+            <h2>Register</h2>
+            <input type="text" placeholder="Full Name">
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button>Register</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const container = document.getElementById("container");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+
+function switchToRegister(){
+    container.classList.add("register-mode");
+    loginForm.classList.remove("active");
+    registerForm.classList.add("active");
+}
+
+function switchToLogin(){
+    container.classList.remove("register-mode");
+    registerForm.classList.remove("active");
+    loginForm.classList.add("active");
+}
+</script>
+
+</body>
+</html>

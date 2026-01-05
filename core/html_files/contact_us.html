@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="../base/css_files/contact_us.css">
+</head>
+<body>
+    <h1 class="contact-title">Contact Us</h1>
+    <div class="contact-title">We would love to hear from you! Please fill out the form below to get in touch with us.</div>
+    <form action="/submit_contact" method="post"    >
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+    <div class="foot_text">If you have any questions, feel free to reach out to us at <a href="mailto:contact@hopehub.org">contact@hopehub.org</a></div>
+    <div class="foot_text">Call Us <a href="tel:+1234567890">+1234567890</a></div>
+    <div class="foot_text">Address: 123 Hope Street, Hopeville, HOPE 12345</div>
+    <div class="foot_text">Website: <a href="https://hopehub.org">hopehub.org</a></div>
+    
+    <script src="../base/javascipt_files/contact_us.js"></script>
+</body>
+</html>

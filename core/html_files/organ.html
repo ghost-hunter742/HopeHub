@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Organ Locator | Hope Hub</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root { 
+            --organ-red: #eb4d4b; 
+            --dark: #2d3436; 
+            --soft-bg: #fdfdfd;
+        }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--soft-bg); }
+        
+        /* Sidebar styling */
+        #sidebar { 
+            width: 380px; background: white; 
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1); 
+            padding: 20px; overflow-y: auto; z-index: 1000; 
+        }
+        #map { flex-grow: 1; height: 100%; }
+
+        h2 { color: var(--organ-red); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        .filter-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; color: #636e72; margin-bottom: 5px; }
+        
+        select, input { 
+            width: 100%; padding: 12px; border-radius: 10px; 
+            border: 1px solid #dfe6e9; box-sizing: border-box; 
+            font-size: 0.9rem; transition: 0.3s;
+        }
+        input:focus { border-color: var(--organ-red); outline: none; }
+
+        .organ-item { 
+            padding: 15px; border-radius: 12px; background: #fffafa; 
+            margin-bottom: 10px; border-left: 5px solid var(--organ-red);
+            cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .organ-item:hover { background: #fff5f5; transform: scale(1.02); }
+        .organ-badge { 
+            font-size: 0.7rem; background: var(--organ-red); 
+            color: white; padding: 3px 10px; border-radius: 5px; 
+            font-weight: bold; text-transform: uppercase;
+        }
+        .hospital-name { font-weight: bold; display: block; margin-top: 8px; color: var(--dark); }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h2>🫀 Organ Locator</h2>
+    
+    <div class="filter-group">
+        <label>Country</label>
+        <select id="countrySelect" onchange="updateFilters()">
+            <option value="all">All Countries</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>State / Province</label>
+        <input type="text" id="stateInput" placeholder="Enter State (e.g. Sikkim)" onkeyup="updateFilters()">
+    </div>
+
+    <div class="filter-group">
+        <label>City</label>
+        <input type="text" id="cityInput" placeholder="Enter City (e.g. Faizabad)" onkeyup="updateFilters()">
+    </div>
+
+    <div class="filter-group">
+        <label>Organ Type</label>
+        <select id="organSelect" onchange="updateFilters()">
+            <option value="all">All Possible Organs</option>
+            <option value="Kidney">Kidney</option>
+            <option value="Liver">Liver</option>
+            <option value="Heart">Heart</option>
+            <option value="Lung">Lung</option>
+            <option value="Pancreas">Pancreas</option>
+        </select>
+    </div>
+
+    <div id="list-results"></div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map;
+    let markerLayer = L.layerGroup();
+
+    // Data includes coordinates (Lat/Lng) for precise mapping
+    const organData = [
+        { name: "Apollo Multispecialty", type: "Kidney", city: "Delhi", state: "Delhi", country: "India", lat: 28.5355, lng: 77.2711 },
+        { name: "Sikkim Health Center", type: "Liver", city: "Gangtok", state: "Sikkim", country: "India", lat: 27.3314, lng: 88.6138 },
+        { name: "Faizabad District Hosp", type: "Heart", city: "Faizabad", state: "Uttar Pradesh", country: "India", lat: 26.7730, lng: 82.1447 },
+        { name: "Mayo Clinic", type: "Lung", city: "Rochester", state: "Minnesota", country: "USA", lat: 44.0234, lng: -92.4630 },
+        { name: "Kings College Hosp", type: "Liver", city: "London", state: "London", country: "UK", lat: 51.4682, lng: -0.0932 }
+    ];
+
+    function initMap() {
+        // Initialize map centered on the world
+        map = L.map('map').setView([20, 0], 2); 
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        markerLayer.addTo(map);
+        updateFilters();
+    }
+
+    function updateFilters() {
+        const country = document.getElementById('countrySelect').value.toLowerCase();
+        const state = document.getElementById('stateInput').value.toLowerCase();
+        const city = document.getElementById('cityInput').value.toLowerCase();
+        const type = document.getElementById('organSelect').value.toLowerCase();
+
+        markerLayer.clearLayers();
+        const listDiv = document.getElementById('list-results');
+        listDiv.innerHTML = "";
+
+        const filtered = organData.filter(item => {
+            const matchCountry = country === 'all' || item.country.toLowerCase() === country;
+            const matchState = item.state.toLowerCase().includes(state);
+            const matchCity = item.city.toLowerCase().includes(city);
+            const matchType = type === 'all' || item.type.toLowerCase() === type;
+
+            return matchCountry && matchState && matchCity && matchType;
+        });
+
+        const bounds = [];
+
+        filtered.forEach(item => {
+            // Add Marker
+            const marker = L.marker([item.lat, item.lng])
+                .bindPopup(`<b>${item.name}</b><br>Available: ${item.type}`)
+                .addTo(markerLayer);
+            
+            bounds.push([item.lat, item.lng]);
+
+            // Add Sidebar List Item
+            const div = document.createElement('div');
+            div.className = 'organ-item';
+            div.innerHTML = `
+                <span class="organ-badge">${item.type}</span>
+                <span class="hospital-name">${item.name}</span>
+                <small>📍 ${item.city}, ${item.state}, ${item.country}</small>
+            `;
+            // Click to fly to location
+            div.onclick = () => map.flyTo([item.lat, item.lng], 13);
+            listDiv.appendChild(div);
+        });
+
+        // Smart Zoom: Fit the map to shown results
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 10 });
+        }
+    }
+
+    window.onload = initMap;
+</script>
+</body>
+</html>

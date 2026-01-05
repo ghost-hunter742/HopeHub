@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Request | LifeLink</title>
+    <link rel="stylesheet" href="../base/css_files/request.css">
+</head>
+<body>
+
+    <div class="request-container">
+        <header class="form-header">
+            <h1>Post a Request</h1>
+            <p>Please provide accurate details for the required Organ, Blood, or Tissue to help us coordinate with verified hospitals.</p>
+        </header>
+
+        <form action="/submit_request" method="POST" class="request-form">
+            
+            <div class="form-group">
+                <label for="request-type">What do you need?</label>
+                <select id="request-type" name="request_type" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="organ">Organ (Kidney, Liver, etc.)</option>
+                    <option value="blood">Blood (A+, B-, etc.)</option>
+                    <option value="tissue">Tissue (Cornea, Bone, etc.)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="specific-item">Specific Requirement</label>
+                <input type="text" id="specific-item" name="specific_item" placeholder="e.g. O Negative Blood / Left Kidney" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="urgency">Urgency Level</label>
+                    <select id="urgency" name="urgency" required>
+                        <option value="normal">Normal</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="critical">Critical (Immediate)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="patient-id">Patient ID / National ID</label>
+                    <input type="text" id="patient-id" name="patient_id" placeholder="ID Number" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="hospital">Preferred Hospital (Optional)</label>
+                <input type="text" id="hospital" name="hospital" placeholder="Name of hospital">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Additional Medical Notes</label>
+                <textarea id="notes" name="notes" rows="4" placeholder="Mention any specific medical conditions..."></textarea>
+            </div>
+
+            <div class="consent-box">
+                <input type="checkbox" id="consent" required>
+                <label for="consent">I confirm that this information is accurate and I agree to the <a href="terms_conditions.html">Terms & Conditions</a>.</label>
+            </div>
+
+            <button type="submit" class="submit-btn">Post Request</button>
+        </form>
+    </div>
+
+</body>
+</html>

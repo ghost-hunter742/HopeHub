@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Tissue Locator | Hope Hub</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root { --primary-teal: #00cec9; --dark: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; }
+        
+        #sidebar { width: 380px; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.1); padding: 20px; overflow-y: auto; z-index: 1000; }
+        #map { flex-grow: 1; height: 100%; }
+
+        .filter-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; color: #636e72; margin-bottom: 5px; }
+        
+        select, input { 
+            width: 100%; padding: 10px; border-radius: 8px; 
+            border: 1px solid #dfe6e9; box-sizing: border-box; 
+        }
+
+        .tissue-item { 
+            padding: 15px; border-radius: 10px; background: #f9f9f9; 
+            margin-bottom: 10px; border-left: 5px solid var(--primary-teal);
+            cursor: pointer; transition: 0.2s;
+        }
+        .tissue-item:hover { background: #f0fdfd; }
+        .tissue-badge { font-size: 0.7rem; background: var(--primary-teal); color: white; padding: 2px 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h2>🌍 Tissue Locator</h2>
+    
+    <div class="filter-group">
+        <label>Country</label>
+        <select id="countrySelect" onchange="updateFilters()">
+            <option value="all">All Countries</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>State / Province</label>
+        <input type="text" id="stateInput" placeholder="Enter state..." onkeyup="updateFilters()">
+    </div>
+
+    <div class="filter-group">
+        <label>City</label>
+        <input type="text" id="cityInput" placeholder="Enter city..." onkeyup="updateFilters()">
+    </div>
+
+    <div class="filter-group">
+        <label>Tissue Type</label>
+        <select id="tissueSelect" onchange="updateFilters()">
+            <option value="all">All Tissues</option>
+            <option value="Cornea">Cornea</option>
+            <option value="Skin">Skin</option>
+            <option value="Bone">Bone</option>
+        </select>
+    </div>
+
+    <div id="list-results"></div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map;
+    let markerLayer = L.layerGroup();
+
+    // Data includes coordinates for mapping
+    const tissueData = [
+        { name: "Sikkim Eye Bank", type: "Cornea", city: "Gangtok", state: "Sikkim", country: "India", lat: 27.3314, lng: 88.6138 },
+        { name: "Faizabad Hub", type: "Bone", city: "Faizabad", state: "Uttar Pradesh", country: "India", lat: 26.7730, lng: 82.1447 },
+        { name: "London Skin Bank", type: "Skin", city: "London", state: "London", country: "UK", lat: 51.5074, lng: -0.1278 },
+        { name: "NY Valve Center", type: "Heart Valve", city: "New York", state: "New York", country: "USA", lat: 40.7128, lng: -74.0060 }
+    ];
+
+    // Initialize the Map
+    function initMap() {
+        map = L.map('map').setView([20, 0], 2); 
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        markerLayer.addTo(map);
+        updateFilters();
+    }
+
+    function updateFilters() {
+        const country = document.getElementById('countrySelect').value.toLowerCase();
+        const state = document.getElementById('stateInput').value.toLowerCase();
+        const city = document.getElementById('cityInput').value.toLowerCase();
+        const type = document.getElementById('tissueSelect').value.toLowerCase();
+
+        markerLayer.clearLayers();
+        const listDiv = document.getElementById('list-results');
+        listDiv.innerHTML = "";
+
+        const filtered = tissueData.filter(item => {
+            return (country === 'all' || item.country.toLowerCase() === country) &&
+                   (item.state.toLowerCase().includes(state)) &&
+                   (item.city.toLowerCase().includes(city)) &&
+                   (type === 'all' || item.type.toLowerCase() === type);
+        });
+
+        const bounds = [];
+
+        filtered.forEach(item => {
+            // Add Marker to Map
+            const marker = L.marker([item.lat, item.lng])
+                .bindPopup(`<b>${item.name}</b><br>${item.type}`)
+                .addTo(markerLayer);
+            
+            bounds.push([item.lat, item.lng]);
+
+            // Add to Sidebar
+            const div = document.createElement('div');
+            div.className = 'tissue-item';
+            div.innerHTML = `
+                <span class="tissue-badge">${item.type}</span>
+                <div style="font-weight:bold; margin-top:5px;">${item.name}</div>
+                <small>${item.city}, ${item.state}</small>
+            `;
+            div.onclick = () => map.flyTo([item.lat, item.lng], 12);
+            listDiv.appendChild(div);
+        });
+
+        // Auto-adjust map view
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+    }
+
+    window.onload = initMap;
+</script>
+</body>
+</html>

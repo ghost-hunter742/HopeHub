@@ -1,0 +1,115 @@
+/* --- Global Styles --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f0f7ff; /* Light brand background */
+    color: #334155;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* --- Main Card --- */
+.terms-card {
+    background-color: #ffffff;
+    width: 95%;
+    max-width: 800px;
+    margin: 40px 10px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border-top: 10px solid #6ed8fe; /* Theme Accent Color */
+}
+
+/* --- Header --- */
+.terms-header {
+    text-align: center;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 25px;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #0f172a;
+    font-size: 2.2rem;
+    margin: 0 0 10px 0;
+}
+
+.update-date {
+    color: #64748b;
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+.intro {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    color: #475569;
+}
+
+/* --- Body Sections --- */
+.section {
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #0284c7; /* Brand Blue */
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+/* --- Footer Consent --- */
+.terms-footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f8fafc;
+    border-radius: 10px;
+    border-left: 5px solid #6ed8fe;
+    text-align: center;
+}
+
+.terms-footer p {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .terms-card {
+        padding: 25px 20px;
+        margin: 20px 10px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .intro {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+}

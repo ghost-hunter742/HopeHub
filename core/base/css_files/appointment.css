@@ -1,0 +1,61 @@
+/* Reuse most of the Request CSS and add these specifics */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0f8ff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.main-container { width: 100%; max-width: 550px; }
+
+.page-header { text-align: center; margin-bottom: 25px; }
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    border-top: 6px solid #6ed8fe;
+}
+
+.group { margin-bottom: 20px; }
+
+.row { display: flex; gap: 15px; }
+
+label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; }
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.info-box {
+    background: #eef9ff;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #446688;
+    margin-bottom: 20px;
+    border-left: 4px solid #6ed8fe;
+}
+
+.btn {
+    width: 100%;
+    background: #6ed8fe;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@media (max-width: 500px) {
+    .row { flex-direction: column; gap: 0; }
+}

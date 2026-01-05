@@ -1,0 +1,95 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    margin: 0;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+.description {
+    color: #5d6d7e;
+    text-align: center;
+    max-width: 550px;
+    margin-bottom: 35px;
+}
+
+/* Modern Card Form */
+form {
+    background: #ffffff;
+    width: 100%;
+    max-width: 550px;
+    padding: 45px;
+    border-radius: 16px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.06);
+    border-top: 8px solid #6ed8fe; /* HopeHub Accent */
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #34495e;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    padding: 16px;
+    width: 90%;
+    margin-bottom: 22px;
+    border: 1.5px solid #dce4ec;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: #6ed8fe;
+}
+
+input[type="submit"] {
+    background-color: #6ed8fe;
+    color: white;
+    border: none;
+    padding: 16px;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+input[type="submit"]:hover {
+    background-color: #53b2f6;
+    transform: translateY(-2px);
+}
+@media (max-width: 600px) {
+    .contact-container {
+        width: 95%;
+        padding: 20px 0;
+    }
+    
+    form {
+        padding: 25px 20px; /* Reduced padding on small screens */
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+    .foot_text {
+      font-size: 2.5vw;
+    }
+    .contact-title {
+      font-size: 4vw;
+    }
+}

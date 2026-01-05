@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: #f4f7fb;
+}
+
+.con {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #0a66c2, #2ecc71);
+  overflow: hidden;
+}
+
+.item {
+  position: absolute;
+  width: 50vw;
+  height: 50vh;
+  text-align: center;
+  align-content: center;
+  transition: 1.2s ease;
+  color: white;
+}
+
+.l2, .l4 {
+  left: 50%;
+}
+
+.l3, .l4 {
+  top: -50%;
+}
+
+.slider {
+  position: absolute;
+  width: 50vw;
+  height: 50vh;
+  background: white;
+  left: 50%;.item {
+  position: absolute;
+  width: 50vw;
+  height: 50vh;
+  text-align: center;
+  align-content: center;
+  transition: 1.2s ease;
+  color: white;
+  z-index: 2;   /* 🔑 FIX */
+}
+
+.slider {
+  position: absolute;
+  width: 50vw;
+  height: 50vh;
+  background: white;
+  left: 50%;
+  border-radius: 10vw 2vw 2vw 10vw;
+  transition: 1.2s ease;
+  z-index: 1;   /* 🔑 FIX */
+}
+
+.l1, .l2 {
+  top: 0;
+}
+
+.l3, .l4 {
+  top: 50%;
+}
+
+  border-radius: 10vw 0vw 0vw 10vw;
+  transition: 1.2s ease;
+  z-index: 1;
+}
+
+.btn1 {
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  border: none;
+  background: #0a66c2;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn1:hover {
+  background: #084c91;
+}

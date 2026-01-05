@@ -1,0 +1,121 @@
+/* --- Global Styles --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f9ff;
+    display: flex;
+    justify-content: center;
+    padding: 40px 10px;
+}
+
+.request-container {
+    width: 100%;
+    max-width: 650px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-top: 8px solid #6ed8fe;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h1 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.form-header p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* --- Form Layout --- */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+input, select, textarea {
+    padding: 12px;
+    border: 1.5px solid #dce4ec;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #6ed8fe;
+}
+
+/* --- Special Elements --- */
+.consent-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.consent-box a {
+    color: #6ed8fe;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #6ed8fe;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #53b2f6;
+    transform: translateY(-2px);
+}
+
+/* --- Responsive Fixes --- */
+@media (max-width: 600px) {
+    .request-container {
+        padding: 25px 20px;
+    }
+
+    .form-row {
+        flex-direction: column; /* Stacks inputs on mobile */
+        gap: 0;
+    }
+
+    .form-header h1 {
+        font-size: 1.6rem;
+    }
+}
